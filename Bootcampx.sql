@@ -1,5 +1,17 @@
-create table student (id serial primary key, name varchar(50), email varchar(50), phone integer, github varchar(50), start_date date, end_date date, cohort_id integer, constraint fk_cohort FOREIGN KEY(cohort_id) REFERENCES cohort(id));
+CREATE TABLE cohorts (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  start_date DATE,
+  end_date DATE
+);
 
-
-ALTER TABLE cohort
-RENAME TO cohorts;
+CREATE TABLE students (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255),
+  phone VARCHAR(32),
+  github VARCHAR(255),
+  start_date DATE,
+  end_date DATE,
+  cohort_id INTEGER REFERENCES cohorts(id) ON DELETE CASCADE
+);
