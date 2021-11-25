@@ -8,14 +8,16 @@ const pool = new Pool({
 });
 
 const cohortName = process.argv[2];
-const limit = Number(process.argv[3]);
-  
-pool.query(`
-SELECT students.id, students.name, c.name as cohort
-FROM students
-JOIN cohorts AS c ON c.id = cohort_id
-LIMIT ${limit};
-`)
+const limit = process.argv[3] || 5;
+const values = [`%${cohortName}%`, limit];
+const queryString = `
+  SELECT students.id as student_id, students.name as name, cohorts.name as cohort
+  FROM students
+  JOIN cohorts ON cohorts.id = cohort_id
+  WHERE cohorts.name LIKE $1
+  LIMIT $2;
+  `;
+pool.query(queryString, values)
 .then(res => {
     res.rows.forEach(user => {
     console.log(`${user.name} has an id of ${user.id} and was in the ${user.cohort} cohort`);

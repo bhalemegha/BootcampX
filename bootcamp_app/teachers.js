@@ -8,7 +8,7 @@ const pool = new Pool({
 });
 
 const cohortName = process.argv[2];
-
+const values = [`%${cohortName}%`];
 const selectSql = `SELECT t.name AS teacher, c.name AS cohort
 FROM assistance_requests AS a
 JOIN teachers AS t
@@ -17,8 +17,8 @@ JOIN students AS s
 ON s.id = a.student_id
 JOIN cohorts AS c
 ON c.id = s.cohort_id
-WHERE c.name LIKE '%${cohortName}%';`
-pool.query(selectSql)
+WHERE c.name LIKE $1;`
+pool.query(selectSql, values)
 .then(res => {
     res.rows.forEach(user => {
     console.log(`${user.cohort}: ${user.teacher}`);
